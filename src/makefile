@@ -9,7 +9,8 @@ CXXFLAGS = -Wctor-dtor-privacy \
 	   -Wstrict-null-sentinel \
 	   -Woverloaded-virtual \
 	   -Wno-pmf-conversions \
-	   -Wsign-promo
+	   -Wsign-promo \
+
 
 CPPFLAGS = -pipe \
 	   -ggdb3 -Wstrict-overflow=5 -fstack-protector-all \
@@ -42,13 +43,13 @@ CPPFLAGS = -pipe \
 	   -Wvolatile-register-var \
 	   -Wwrite-strings
 
-
 CFLAGS  = -std=c99 \
 	  -Wbad-function-cast \
 	  -Wmissing-prototypes \
 	  -Wnested-externs \
 	  -Wold-style-definition \
-	  -Wstrict-prototypes
+		
+
 
 
 #------------------------------------------------------------------------------
