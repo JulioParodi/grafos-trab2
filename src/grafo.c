@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include "grafo.h"
 
-unsigned int n_trilhas_cobertura(grafo g){
+unsigned int n_vertices_impar(grafo g){
   unsigned int n = 0, grau = 0;
   grafo auxGrafo = g;
   vertice auxVertice = NULL;
@@ -24,18 +24,124 @@ unsigned int n_trilhas_cobertura(grafo g){
   return n;
 }
 
+void insere_v_aos_impares(grafo g){
+  unsigned int grau = 0;
+  grafo auxGrafo = g;
+  vertice auxVertice = NULL;
+  vertice pai = NULL;
+
+
+  while (auxGrafo){
+    auxVertice = auxGrafo->verticeAdj;
+    grau = 0;
+    while (auxVertice){
+      ++grau;
+      pai = auxVertice;
+      auxVertice = auxVertice->proximo;
+    }
+    if (!(grau % 2 == 0)){
+      pai->proximo = aloca_vertice();
+      strcpy (pai->proximo->nomeVert, "InseridoNosImpares");
+    }
+    auxGrafo = auxGrafo->proxVertice;
+  }
+
+}
+
+void printa_trilha (vertice trilha){
+  vertice aux = trilha;
+  printf("%s\n", "TRILHA");
+  while (aux) {
+    printf("%s -> ", aux->nomeVert);
+    aux = aux->proximo;
+  }
+  printf("\n");
+}
+
+int existe_vert_da_trilha_em_G_com_grau_positivo(grafo g,vertice trilhaEuleriana, char *vert){
+  vertice auxTrilha = trilhaEuleriana;
+  grafo auxGrafo = g;
+  strcpy(vert, "\0");
+  while (auxTrilha) {
+    grafo auxGrafo = g;
+    while (auxGrafo){
+      if (!strcmp (auxGrafo->nomeVert, auxTrilha->nomeVert)){
+        if(auxGrafo->verticeAdj){
+          strcpy(vert, auxGrafo->nomeVert);
+          return 1;
+        }
+      }
+      auxGrafo = auxGrafo->proxVertice;
+    }
+    auxTrilha = auxTrilha->proximo;
+  }
+  return 0;
+}
+
+void encontra_circuito_no_grafo(grafo g,char *vert ,vertice circuito){
+  grafo auxGrafo = g;
+  while (auxGrafo){
+
+
+    auxGrafo = auxGrafo->proxVertice;
+  }
+}
+
+
+// Esta função modificará o grafo g,
+void encontra_trilha_euleriana(grafo g, vertice trilhaEuleriana){
+  grafo auxGrafo = g;
+  vertice circuito;
+  trilhaEuleriana = aloca_vertice();
+  char vert[1024];
+  strcpy (trilhaEuleriana->nomeVert, g->nomeVert);
+  strcpy (trilhaEuleriana->nomeVert, "d");
+
+  // printa_trilha(trilhaEuleriana);
+
+  // circuito = aloca_vertice();
+  // strcpy (circuito->nomeVert, "f");
+  // circuito->proximo = aloca_vertice();
+  // strcpy (circuito->proximo->nomeVert, "f");
+  // circuito->proximo->proximo = aloca_vertice();
+  // strcpy (circuito->proximo->proximo->nomeVert, "a");
+  // printa_trilha(circuito);
+
+
+  // printf("%d com vert %s\n", existe_vert_da_trilha_em_G_com_grau_positivo(g,circuito,vert), vert);
+  while (existe_vert_da_trilha_em_G_com_grau_positivo(g, trilhaEuleriana, vert)){
+
+    encontra_circuito_no_grafo(g,vert,circuito);
+    // insere_circuito_na_trilha(trilhaEuleriana,circuito);
+    // remove_arestas_circuito_do_grafo(g,circuito);
+    // printf("%s", "a");
+
+  }
+
+
+}
+
+
 unsigned int cobertura_por_trilhas(grafo g, vertice *cobertura[]){
-  unsigned int k;
+  unsigned int k = 0;
   vertice trilhaEuleriana = NULL;
-  k = n_trilhas_cobertura(g);
+  k = n_vertices_impar(g);
 
   if(k != 0){
-
-    // insere_v_aos_impares(g);
-    // encontra_trilha_euleriana(g, trilhaEuleriana);
+    // grafo possui mais de uma trilha de cobertura
+    printa_grafo(g);
+    insere_v_aos_impares(g);
+    printa_grafo(g);
+    encontra_trilha_euleriana(g, trilhaEuleriana);
+    // segmenta_trilha_euleriana(trilhaEuleriana, *cobertura[])
 
     return k/2;
   } else {
+    //grafo é euleriano, logo possui uma trilha de cobertura
+    printa_grafo(g);
+
+    encontra_trilha_euleriana(g, trilhaEuleriana);
+
     return 1;
   }
 
@@ -68,7 +174,6 @@ unsigned int n_arestas(grafo g){
   return n/2;
 }
 
-
 grafo aloca_grafo (void){
   // Aloca espaço em memoria para a estrutura grafo
   grafo g = (grafo) malloc( sizeof(GrafoS) );
@@ -80,7 +185,6 @@ grafo aloca_grafo (void){
   }
   return g;
 }
-
 
 grafo le_grafo(FILE *input){
   grafo cabeca = NULL;
@@ -150,7 +254,6 @@ grafo le_grafo(FILE *input){
   // retorna o inicio do grafo
   return cabeca;
 }
-
 
 vertice aloca_vertice (void){
   // Aloca espaço em memoria para a estrutura vertice

@@ -45,7 +45,16 @@ int busca_nomeVert_no_grafo (grafo g, char * vert);
 void printa_grafo (grafo g);
 int verifica_vizinho (grafo vert1, char * nomeVert);
 void cria_vizinho (grafo cabeca, char *vert1Linha, char *vert2Linha);
-unsigned int n_trilhas_cobertura(grafo g);
+unsigned int n_vertices_impar(grafo g);
+void insere_v_aos_impares(grafo g);
+void encontra_trilha_euleriana(grafo g, vertice trilhaEuleriana);
+int existe_vert_da_trilha_em_G_com_grau_positivo(grafo g,vertice trilhaEuleriana, char *vert);
+void encontra_circuito_no_grafo(grafo g,vertice circuito);
+// remove_arestas_circuito_do_grafo(g,circuito);
+
+// void insere_circuito_na_trilha(vertice trilhaEuleriana,vertice circuito);
+
+
 
 
 

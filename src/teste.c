@@ -11,9 +11,9 @@ int main(void) {
 
   g = le_grafo(stdin);
 
-  vertice *cobertura [n_trilhas_cobertura(g)];
+  vertice *cobertura [n_vertices_impar(g)/2];
   if ( !g ) printf("%s\n","Grafo Vazio" );
-  printa_grafo (g);
+  // printa_grafo (g);
 
   printf ("O grafo possui %u vertices e %u arestas\n", n_vertices(g), n_arestas(g));
   printf("O grafo possui %u trilhas de cobertura\n", cobertura_por_trilhas(g, cobertura));
