@@ -19,6 +19,7 @@ typedef struct _grafo {
 typedef struct _vertice {
   char nomeVert[1024];           // Nome do vertice adjacente a algum outro vertice ja existente no grafo
   struct _vertice *proximo;       // Ponteiro para o proximo vizinho do mesmo vertice
+  int visitado;
 } VerticeS;
 
 
@@ -49,7 +50,7 @@ unsigned int n_vertices_impar(grafo g);
 void insere_v_aos_impares(grafo g);
 void encontra_trilha_euleriana(grafo g, vertice trilhaEuleriana);
 int existe_vert_da_trilha_em_G_com_grau_positivo(grafo g,vertice trilhaEuleriana, char *vert);
-void encontra_circuito_no_grafo(grafo g,vertice circuito);
+void encontra_circuito_no_grafo(grafo g,char*,vertice circuito);
 // remove_arestas_circuito_do_grafo(g,circuito);
 
 // void insere_circuito_na_trilha(vertice trilhaEuleriana,vertice circuito);
