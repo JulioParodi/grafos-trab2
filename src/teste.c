@@ -17,8 +17,8 @@ int main(void) {
   printf("numero de trilhas %u\n", n_vertices_impar(g)/2);
   if ( !g ) printf("%s\n","Grafo Vazio" );
   // printa_grafo (g);
-  unsigned int k = cobertura_por_trilhas(g, cobertura);
   printf ("O grafo possui %u vertices e %u arestas\n", n_vertices(g), n_arestas(g));
+  unsigned int k = cobertura_por_trilhas(g, cobertura);
   printf("O grafo possui %u trilhas de cobertura\n", k);
   // printf("%s\n", cobertura[0][2]->nomeVert);
   // printf("%d\n", n);

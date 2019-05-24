@@ -9,18 +9,18 @@
 
 // grafo le_grafo(FILE *input);
 
-// typedef struct _grafo {
-//   char nomeVert[1024];           // Armazena nome do vertice existente no grafo
-//   struct _vertice *verticeAdj;    // Ponteiro para os vertices adjacentes ao nomeVert
-//   struct _grafo *proxVertice;     // Ponteiro para os proximos vertices existentes no grafo
-// } GrafoS;
-//
-//
-// typedef struct _vertice {
-//   char nomeVert[1024];           // Nome do vertice adjacente a algum outro vertice ja existente no grafo
-//   struct _vertice *proximo;       // Ponteiro para o proximo vizinho do mesmo vertice
-//   int visitado;
-// } VerticeS;
+typedef struct _grafo {
+  char nomeVert[1024];           // Armazena nome do vertice existente no grafo
+  struct _vertice *verticeAdj;    // Ponteiro para os vertices adjacentes ao nomeVert
+  struct _grafo *proxVertice;     // Ponteiro para os proximos vertices existentes no grafo
+} GrafoS;
+
+
+typedef struct _vertice {
+  char nomeVert[1024];           // Nome do vertice adjacente a algum outro vertice ja existente no grafo
+  struct _vertice *proximo;       // Ponteiro para o proximo vizinho do mesmo vertice
+  int visitado;
+} VerticeS;
 
 
 //------------------------------------------------------------------------------
@@ -51,6 +51,17 @@ void insere_v_aos_impares(grafo g);
 void encontra_trilha_euleriana(grafo g, vertice trilhaEuleriana);
 int existe_vert_da_trilha_em_G_com_grau_positivo(grafo g,vertice trilhaEuleriana, char *vert);
 void encontra_circuito_no_grafo(grafo g,char*,vertice circuito);
+void segmenta_trilha_euleriana(grafo g,vertice trilhaEuleriana,vertice *cobertura[]);
+void printa_trilha (vertice trilha);
+void inicializa_visitados (grafo g);
+void insere_circuito_na_trilha(vertice trilhaEuleriana, vertice circuito);
+void insere_segmentos_da_trilha_no_grafo_vazio(grafo g, vertice trilhaEuleriana);
+void junta_segmentos_no_grafo (grafo g);
+void remove_aresta (grafo g, char* vertProcurado, char* vertRemovido);
+void remove_arestas_circuito_do_grafo(grafo g, vertice circuito);
+void insere_segmentos_do_grafo_no_vetor (grafo g,vertice *cobertura[]);
+
+
 // remove_arestas_circuito_do_grafo(g,circuito);
 
 // void insere_circuito_na_trilha(vertice trilhaEuleriana,vertice circuito);
