@@ -325,7 +325,7 @@ void encontra_trilha_euleriana(grafo g, vertice trilhaEuleriana){
 
 }
 
-void insere_segmentos_no_grafo_vazio(grafo g, vertice trilhaEuleriana){
+void insere_segmentos_da_trilha_no_grafo_vazio(grafo g, vertice trilhaEuleriana){
   grafo auxGrafo = g;
   vertice auxTrilha = trilhaEuleriana, lixo = NULL;
 
@@ -377,7 +377,6 @@ void junta_segmentos_no_grafo (grafo g){
           }
         }
 
-
       auxPercorre = auxPercorre->proxVertice;
 
       }
@@ -387,52 +386,67 @@ void junta_segmentos_no_grafo (grafo g){
   }
 }
 
-void printa_cobertura (vertice *cobertura[]){
-
-  // for (){
-  //
-  // }
-}
 
 
 void insere_segmentos_do_grafo_no_vetor (grafo g,vertice *cobertura[]){
   grafo auxGrafo = g;
   vertice auxVert = NULL;
   int i = 0 , j = 0;
+
+  // cobertura[] = (vertice*) malloc(10 * sizeof(vertice));
+
   while (auxGrafo){
+    // printf("%s\n", "Procurando segmenmto");
     if (auxGrafo->verticeAdj){
+      // printf("%s\n","Segmento encontrado" );
+
       j = 0;
       auxVert = auxGrafo->verticeAdj;
       while (auxVert){
         ++j;
         auxVert = auxVert->proximo;
       }
-      printf("%d\n", j );
-      cobertura[i] = (vertice) malloc (j * sizeof(vertice));
+       printf("%d\n", j );
+      cobertura[i] = (vertice*) malloc ((1 + j) * sizeof(vertice));
+      if (cobertura[i] == NULL){
+        printf("%s\n", "FALTA ESPAÇO" );
+      }
       j = 0;
       auxVert = auxGrafo->verticeAdj;
 
-      while (auxVert){
+      while (auxVert ){
         printf("Inserindo %s na posiçao %d %d\n",auxVert->nomeVert, i ,j );
-        cobertura[i][j] = auxVert;
+        cobertura[i][j] = aloca_vertice();
+        strcpy (cobertura[i][j]->nomeVert, auxVert->nomeVert);
+        // cobertura[i][j] = auxVert;
+
         printf("inserido %s\n",cobertura[i][j]->nomeVert );
         ++j;
+
         auxVert = auxVert->proximo;
+        // printf("%p\n",auxVert );
       }
+      // printf("\tinserido %s\n",cobertura[0][0]->nomeVert );
+
       cobertura[i][j] = NULL;
-      printa_cobertura (cobertura);
+      // printa_cobertura (cobertura);
       ++i;
     }
     auxGrafo = auxGrafo->proxVertice;
+    // printf("\t%p\n",auxGrafo );
+    // printf("%s\n", cobertura[0][2]->nomeVert);
+
   }
+  // printf("%s\n", "vou oprinta" );
 }
 
 void segmenta_trilha_euleriana(grafo g,vertice trilhaEuleriana,vertice *cobertura[]){
 
-  insere_segmentos_no_grafo_vazio(g, trilhaEuleriana);
-  printa_grafo (g);
+  insere_segmentos_da_trilha_no_grafo_vazio(g, trilhaEuleriana);
+  // printa_grafo (g);
   junta_segmentos_no_grafo (g);
   printa_grafo (g);
+  // printf("%s\n", "Função insere_segmentos_do_grafo_no_vetor" );
   insere_segmentos_do_grafo_no_vetor (g, cobertura);
 
 }
@@ -447,22 +461,26 @@ unsigned int cobertura_por_trilhas(grafo g, vertice *cobertura[]){
 
   if(k != 0){
     // grafo possui mais de uma trilha de cobertura
-    printa_grafo(g);
+    // printa_grafo(g);
     insere_v_aos_impares(g);
-    printa_grafo(g);
+    // printa_grafo(g);
     encontra_trilha_euleriana(g, trilhaEuleriana);
-    printa_trilha (trilhaEuleriana);
-    printa_grafo(g);
+    // printa_trilha (trilhaEuleriana);
+    // printa_grafo(g);
     // junta_segmentos_trilha(trilhaEuleriana);
     segmenta_trilha_euleriana(g,trilhaEuleriana, cobertura);
 
     return k/2;
   } else {
     //grafo é euleriano, logo possui uma trilha de cobertura
-    printa_grafo(g);
+    // printa_grafo(g);
 
     encontra_trilha_euleriana(g, trilhaEuleriana);
+    // printa_trilha (trilhaEuleriana);
+
     segmenta_trilha_euleriana(g, trilhaEuleriana, cobertura);
+    // printf("%s\n", cobertura[0][2]->nomeVert);
+
 
     return 1;
   }
@@ -665,8 +683,9 @@ void printa_grafo (grafo g){
   while (aux){
     printf("%s -> ", aux->nomeVert );
     auxV = aux->verticeAdj;
+
     while (auxV){
-      printf("%s ", auxV->nomeVert);
+      printf("%s ",auxV->nomeVert);
       auxV = auxV->proximo;
     }
     printf("\n");
