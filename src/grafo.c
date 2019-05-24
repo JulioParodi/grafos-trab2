@@ -4,6 +4,21 @@
 #include <stdbool.h>
 #include "grafo.h"
 
+
+typedef struct _grafo {
+  char nomeVert[1024];           // Armazena nome do vertice existente no grafo
+  struct _vertice *verticeAdj;    // Ponteiro para os vertices adjacentes ao nomeVert
+  struct _grafo *proxVertice;     // Ponteiro para os proximos vertices existentes no grafo
+}GrafoS;
+
+typedef struct _vertice {
+  char nomeVert[1024];           // Nome do vertice adjacente a algum outro vertice ja existente no grafo
+  struct _vertice *proximo;       // Ponteiro para o proximo vizinho do mesmo vertice
+  int visitado;
+}VerticeS;
+
+
+
 unsigned int n_vertices_impar(grafo g){
   unsigned int n = 0, grau = 0;
   grafo auxGrafo = g;
@@ -73,7 +88,7 @@ int existe_vert_da_trilha_em_G_com_grau_positivo(grafo g,vertice trilhaEuleriana
   grafo auxGrafo = g;
   strcpy(vert, "\0");
   while (auxTrilha) {
-    grafo auxGrafo = g;
+    auxGrafo = g;
     while (auxGrafo){
       if (!strcmp (auxGrafo->nomeVert, auxTrilha->nomeVert)){
         if(auxGrafo->verticeAdj){
@@ -106,10 +121,8 @@ void encontra_circuito_no_grafo(grafo g,char *vert ,vertice circuito){
   grafo pai = NULL;
   vertice auxVert = NULL, auxCircuito = NULL;
   int achouCircuito = 1;
-  int cont = 0;
-
+  unsigned int cont = 0;
   auxCircuito = circuito;
-  // strcpy (circuito->nomeVert, "f");
 
   inicializa_visitados (g);
 
@@ -117,32 +130,24 @@ void encontra_circuito_no_grafo(grafo g,char *vert ,vertice circuito){
     auxGrafo = auxGrafo->proxVertice;
   }
   pai = auxGrafo;
-  // auxVert = auxGrafo->verticeAdj;
-  int maxInteracoes = n_arestas(g);
+  unsigned int maxInteracoes = n_arestas(g);
   while (achouCircuito && cont < maxInteracoes) {
-    // printa_trilha(circuito);
-    // printf("%s ->\n", auxGrafo->nomeVert );
-    // printf("pai é %s\n", pai->nomeVert );
+
     strcpy (auxCircuito->nomeVert, auxGrafo->nomeVert);
     auxCircuito->proximo = aloca_vertice();
     auxCircuito = auxCircuito->proximo;
 
     auxVert = auxGrafo->verticeAdj;
     while (auxVert){
-      // printf("Procurando o vert %s\n",vert );
       if (strcmp(auxVert->nomeVert, pai->nomeVert) == 0){
         auxVert->visitado = 1;
       }
       if( strcmp(auxVert->nomeVert, vert) == 0){
         if (!(strcmp(pai->nomeVert, vert) == 0)){
           achouCircuito = 0;
-          // printf("%s\n","achei circuito" );
           strcpy (auxCircuito->nomeVert, auxVert->nomeVert);
           auxCircuito->proximo = NULL;
-
-          // printf("%s ->\n", auxVert->nomeVert );
         }
-        // break;
       }
       auxVert = auxVert->proximo;
     }
@@ -154,25 +159,16 @@ void encontra_circuito_no_grafo(grafo g,char *vert ,vertice circuito){
 
     if (auxVert == NULL){
       auxGrafo = pai;
-      // printf("%s\n","Vert NULL" );
-      // while ( strcmp(auxGrafo->nomeVert, pai->nomeVert) != 0){
-      //   auxGrafo = auxGrafo->proxVertice;
-      // }
-    }
-    else {
+    }  else {
       pai = auxGrafo;
       auxVert->visitado = 1;
-      // printf("Indo visitar %s\n", auxVert->nomeVert );
       auxGrafo = g;
       while ( strcmp(auxGrafo->nomeVert, auxVert->nomeVert) != 0){
         auxGrafo = auxGrafo->proxVertice;
       }
-      // printf("Visitando %s\n", auxGrafo->nomeVert);
     }
     cont++;
-    // printf("%s\n","--------------------------------" );
   }
-  // printa_trilha(circuito);
 
 }
 
@@ -180,99 +176,36 @@ void remove_aresta (grafo g, char* vertProcurado, char* vertRemovido){
   grafo auxGrafo = g;
   vertice auxVert = NULL, lixo = NULL;
 
-  // vertice pai = NULL;
-  // printf("procurando o vert %s no grafo\n", vertProcurado);
   while ( strcmp(auxGrafo->nomeVert, vertProcurado) != 0){
     auxGrafo = auxGrafo->proxVertice;
   }
 
-
   if (strcmp (auxGrafo->verticeAdj->nomeVert, vertRemovido) == 0){
-    // printf("O vert %s é o primeiro em %s\n", vertRemovido, vertProcurado );
     lixo = auxGrafo->verticeAdj;
     auxGrafo->verticeAdj = auxGrafo->verticeAdj->proximo;
     free (lixo);
   }else {
-    // auxVert = auxGrafo->verticeAdj;
-    // while (auxVert->proximo){
-    //   if (strcmp (auxVert->proximo->nomeVert, vertRemovido)){
-    //     lixo = auxVert->proximo;
-    //     auxVert->proximo = auxVert->proximo->proximo;
-    //     free (lixo);
-    //   }
-    //   auxVert = auxVert->proximo;
-    // printf("O vert %s esta no meio de %s\n", vertRemovido, vertProcurado );
-
     auxVert = auxGrafo->verticeAdj;
-    // printf("Varrendo o vert %s \n", vertProcurado );
-
     while (auxVert->proximo){
-      // printf("\t vert %s\n", auxVert->proximo->nomeVert );
-
       if (!(strcmp (auxVert->proximo->nomeVert, vertRemovido))){
-        // printf("achei vert a ser removido %s\n", vertRemovido);
         lixo = auxVert->proximo;
         auxVert->proximo = auxVert->proximo->proximo;
-        // printf("antes do free\n" );
         free (lixo);
-        // printf("depois do free\n" );
-
       }
-      // printf("auxVert: %s   auxVert->prox: %s\n", auxVert->nomeVert,auxVert->proximo->nomeVert);
       if (auxVert->proximo != NULL){
-
         auxVert = auxVert->proximo;
       }
-
-
     }
-    // printf("FIM remoção\n");
   }
 }
 
-void remove_arestas_circuito_do_grafo(g,circuito){
-  grafo auxGrafo = g;
-  vertice auxCircuito = circuito; // auxVert = NULL;
-  // int paradaLaco = 1;
+void remove_arestas_circuito_do_grafo(grafo g, vertice circuito){
+  vertice auxCircuito = circuito;
 
   while (auxCircuito->proximo){
-    // auxGrafo = g;
-    // while ( strcmp(auxGrafo->nomeVert, auxCircuito->nomeVert) != 0){
-    //   auxGrafo = auxGrafo->proxVertice;
-    // }
-    // printf("removendo de %s - > %s\n",auxCircuito->nomeVert , auxCircuito->proximo->nomeVert );
     remove_aresta (g, auxCircuito->nomeVert ,auxCircuito->proximo->nomeVert );
-    // printa_grafo (g);
-
-    // printf("removendo de %s - > %s\n",auxCircuito->proximo->nomeVert , auxCircuito->nomeVert );
-
     remove_aresta (g, auxCircuito->proximo->nomeVert ,auxCircuito->nomeVert );
-    // printa_grafo (g);
-
-    // auxVert = auxGrafo->verticeAdj;
-    // pai = auxGrafo->verticeAdj;
-    //
-    // if (strcmp (auxGrafo->verticeAdj->nomeVert, auxCircuito->proximo->nome)){
-    //   lixo = auxGrafo->verticeAdj;
-    //   auxGrafo->verticeAdj = auxGrafo->verticeAdj->proximo;
-    //   free (lixo);
-    // }
-    //
-    // while (auxVert){
-    //   if (strcmp (auxVert->nomeVert, auxCircuito->proximo->nome)){
-    //     pai->proximo;
-    //
-    //     lixo = auxVert;
-    //
-    //     free (lixo);
-    //   }
-    //   auxVert = auxVert->proximo;
-    // }
-
     auxCircuito = auxCircuito->proximo;
-    // if (auxCircuito->proximo == NULL){
-    //   paradaLaco = 0;
-    // }
   }
 }
 
@@ -292,37 +225,15 @@ void insere_circuito_na_trilha(vertice trilhaEuleriana, vertice circuito){
 
 // Esta função modificará o grafo g,
 void encontra_trilha_euleriana(grafo g, vertice trilhaEuleriana){
-  grafo auxGrafo = g;
   vertice circuito =  aloca_vertice();
   char vert[1024];
   strcpy (trilhaEuleriana->nomeVert, g->nomeVert);
-  // strcpy (vert, "a");
 
-  // printa_trilha(trilhaEuleriana);
-
-  // circuito = aloca_vertice();
-  // strcpy (circuito->nomeVert, "f");
-  // circuito->proximo = aloca_vertice();
-  // strcpy (circuito->proximo->nomeVert, "f");
-  // circuito->proximo->proximo = aloca_vertice();
-  // strcpy (circuito->proximo->proximo->nomeVert, "a");
-  // printa_trilha(circuito);
-
-
-  // printf("%d com vert %s\n", existe_vert_da_trilha_em_G_com_grau_positivo(g,circuito,vert), vert);
   while (existe_vert_da_trilha_em_G_com_grau_positivo(g, trilhaEuleriana, vert)){
-
     encontra_circuito_no_grafo(g,vert,circuito);
-    // printf("%s\n", "circuito");
-    // printa_trilha(circuito);
     remove_arestas_circuito_do_grafo(g,circuito);
     insere_circuito_na_trilha(trilhaEuleriana,circuito);
-    // printf("%s\n", "trilhaEuleriana");
-    // printa_trilha(trilhaEuleriana);
-    // printa_grafo (g);
-    // printf("%s", "a");
   }
-
 }
 
 void insere_segmentos_da_trilha_no_grafo_vazio(grafo g, vertice trilhaEuleriana){
@@ -330,7 +241,6 @@ void insere_segmentos_da_trilha_no_grafo_vazio(grafo g, vertice trilhaEuleriana)
   vertice auxTrilha = trilhaEuleriana, lixo = NULL;
 
   auxGrafo->verticeAdj = auxTrilha;
-
   while (auxTrilha->proximo) {
     if (strcmp(auxTrilha->proximo->nomeVert, "InseridoNosImpares") == 0 && (auxTrilha->proximo->proximo != NULL)){
       auxGrafo = auxGrafo->proxVertice;
@@ -343,25 +253,13 @@ void insere_segmentos_da_trilha_no_grafo_vazio(grafo g, vertice trilhaEuleriana)
       auxTrilha = auxTrilha->proximo;
     }
   }
-
-  // auxGrafo = g;
-  // while (auxGrafo){
-  //   if(auxGrafo->proxVertice->verticeAdj == NULL){
-  //     lixo = auxGrafo->proxVertice;
-  //     auxGrafo->proxVertice = auxGrafo->proxVertice->proxVertice;
-  //     free(lixo);
-  //   }
-  //   auxGrafo = auxGrafo->proxVertice;
-  //
-  // }
-
 }
 
 void junta_segmentos_no_grafo (grafo g){
   grafo auxCabeca = g, auxPercorre;
   vertice cauda;
-  int n = n_vertices(g);
-  for (int i = 0; i < n; ++i){
+  unsigned int n = n_vertices(g);
+  for (unsigned int i = 0; i < n; ++i){
     if (auxCabeca->verticeAdj){
       auxPercorre = auxCabeca->proxVertice;
       while (auxPercorre){
@@ -376,117 +274,73 @@ void junta_segmentos_no_grafo (grafo g){
             auxCabeca->verticeAdj = NULL;
           }
         }
-
       auxPercorre = auxPercorre->proxVertice;
-
       }
-
     }
     auxCabeca = auxCabeca->proxVertice;
   }
 }
 
-
-
 void insere_segmentos_do_grafo_no_vetor (grafo g,vertice *cobertura[]){
   grafo auxGrafo = g;
   vertice auxVert = NULL;
-  int i = 0 , j = 0;
-
-  // cobertura[] = (vertice*) malloc(10 * sizeof(vertice));
+  unsigned int i = 0 , j = 0;
 
   while (auxGrafo){
-    // printf("%s\n", "Procurando segmenmto");
     if (auxGrafo->verticeAdj){
-      // printf("%s\n","Segmento encontrado" );
-
       j = 0;
       auxVert = auxGrafo->verticeAdj;
       while (auxVert){
         ++j;
         auxVert = auxVert->proximo;
       }
-       printf("%d\n", j );
       cobertura[i] = (vertice*) malloc ((1 + j) * sizeof(vertice));
       if (cobertura[i] == NULL){
-        printf("%s\n", "FALTA ESPAÇO" );
+        printf("%s\n", "malloc: FALTA ESPAÇO NA MEMORIA" );
       }
+
       j = 0;
       auxVert = auxGrafo->verticeAdj;
-
       while (auxVert ){
-        printf("Inserindo %s na posiçao %d %d\n",auxVert->nomeVert, i ,j );
         cobertura[i][j] = aloca_vertice();
         strcpy (cobertura[i][j]->nomeVert, auxVert->nomeVert);
-        // cobertura[i][j] = auxVert;
-
-        printf("inserido %s\n",cobertura[i][j]->nomeVert );
         ++j;
-
         auxVert = auxVert->proximo;
-        // printf("%p\n",auxVert );
       }
-      // printf("\tinserido %s\n",cobertura[0][0]->nomeVert );
-
       cobertura[i][j] = NULL;
-      // printa_cobertura (cobertura);
       ++i;
     }
     auxGrafo = auxGrafo->proxVertice;
-    // printf("\t%p\n",auxGrafo );
-    // printf("%s\n", cobertura[0][2]->nomeVert);
-
   }
-  // printf("%s\n", "vou oprinta" );
 }
 
 void segmenta_trilha_euleriana(grafo g,vertice trilhaEuleriana,vertice *cobertura[]){
 
   insere_segmentos_da_trilha_no_grafo_vazio(g, trilhaEuleriana);
-  // printa_grafo (g);
   junta_segmentos_no_grafo (g);
-  printa_grafo (g);
-  // printf("%s\n", "Função insere_segmentos_do_grafo_no_vetor" );
   insere_segmentos_do_grafo_no_vetor (g, cobertura);
-
 }
-
-
 
 unsigned int cobertura_por_trilhas(grafo g, vertice *cobertura[]){
   unsigned int k = 0;
   vertice trilhaEuleriana = aloca_vertice();
 
   k = n_vertices_impar(g);
-
   if(k != 0){
     // grafo possui mais de uma trilha de cobertura
-    // printa_grafo(g);
     insere_v_aos_impares(g);
-    // printa_grafo(g);
     encontra_trilha_euleriana(g, trilhaEuleriana);
-    // printa_trilha (trilhaEuleriana);
-    // printa_grafo(g);
-    // junta_segmentos_trilha(trilhaEuleriana);
     segmenta_trilha_euleriana(g,trilhaEuleriana, cobertura);
 
     return k/2;
   } else {
-    //grafo é euleriano, logo possui uma trilha de cobertura
-    // printa_grafo(g);
-
+    //grafo é euleriano, logo possui somente uma trilha de cobertura
     encontra_trilha_euleriana(g, trilhaEuleriana);
-    // printa_trilha (trilhaEuleriana);
-
     segmenta_trilha_euleriana(g, trilhaEuleriana, cobertura);
-    // printf("%s\n", cobertura[0][2]->nomeVert);
-
 
     return 1;
   }
-
 }
-
 
 unsigned int n_vertices(grafo g){
   unsigned int n = 0;

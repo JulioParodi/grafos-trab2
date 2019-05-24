@@ -9,18 +9,18 @@
 
 // grafo le_grafo(FILE *input);
 
-// typedef struct _grafo {
-//   char nomeVert[1024];           // Armazena nome do vertice existente no grafo
-//   struct _vertice *verticeAdj;    // Ponteiro para os vertices adjacentes ao nomeVert
-//   struct _grafo *proxVertice;     // Ponteiro para os proximos vertices existentes no grafo
-// } GrafoS;
-//
-//
-// typedef struct _vertice {
-//   char nomeVert[1024];           // Nome do vertice adjacente a algum outro vertice ja existente no grafo
-//   struct _vertice *proximo;       // Ponteiro para o proximo vizinho do mesmo vertice
-//   int visitado;
-// } VerticeS;
+typedef struct _grafo {
+  char nomeVert[1024];           // Armazena nome do vertice existente no grafo
+  struct _vertice *verticeAdj;    // Ponteiro para os vertices adjacentes ao nomeVert
+  struct _grafo *proxVertice;     // Ponteiro para os proximos vertices existentes no grafo
+} GrafoS;
+
+
+typedef struct _vertice {
+  char nomeVert[1024];           // Nome do vertice adjacente a algum outro vertice ja existente no grafo
+  struct _vertice *proximo;       // Ponteiro para o proximo vizinho do mesmo vertice
+  int visitado;
+} VerticeS;
 
 
 //------------------------------------------------------------------------------

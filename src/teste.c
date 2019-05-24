@@ -10,10 +10,10 @@ int main(void) {
   grafo g = NULL;
   unsigned int i = 0, j =0;
   g = le_grafo(stdin);
-  unsigned n = n_vertices_impar(g)/2 ;
-  printf("%d\n", n);
+  unsigned int n = n_vertices_impar(g)/2 ;
+  // printf("%d\n", n);
 
-  vertice *cobertura[n_vertices_impar(g)/2];
+  vertice *cobertura[n];
   printf("numero de trilhas %u\n", n_vertices_impar(g)/2);
   if ( !g ) printf("%s\n","Grafo Vazio" );
   // printa_grafo (g);
@@ -21,7 +21,7 @@ int main(void) {
   printf ("O grafo possui %u vertices e %u arestas\n", n_vertices(g), n_arestas(g));
   printf("O grafo possui %u trilhas de cobertura\n", k);
   // printf("%s\n", cobertura[0][2]->nomeVert);
-  printf("%d\n", n);
+  // printf("%d\n", n);
 
   if (k == 1){
     while (cobertura[0][j]){
