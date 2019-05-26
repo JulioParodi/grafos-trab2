@@ -5,7 +5,6 @@
 #include "grafo.h"
 
 
-
 // typedef struct _grafo {
 //   char nomeVert[1024];           // Armazena nome do vertice existente no grafo
 //   struct _vertice *verticeAdj;    // Ponteiro para os vertices adjacentes ao nomeVert
@@ -18,7 +17,100 @@
 //   int visitado;
 // }VerticeS;
 
+//
 
+
+grafo copia_grafo( grafo g){
+
+  if (g == NULL){
+    return NULL;
+  }
+  grafo auxGrafo = g;
+  grafo copia = aloca_grafo ();
+  strcpy (copia->nomeVert, auxGrafo->nomeVert );
+  grafo auxCopia = copia;
+  vertice auxVertCopia, auxVert;
+
+  while (auxGrafo){
+    auxVert = auxGrafo->verticeAdj;
+
+    if (auxVert){
+
+      auxCopia->verticeAdj = aloca_vertice();
+      strcpy (auxCopia->verticeAdj->nomeVert, auxVert->nomeVert );
+      auxVertCopia = auxCopia->verticeAdj;
+      auxVert = auxVert->proximo;
+
+      while (auxVert) {
+        auxVertCopia->proximo = aloca_vertice();
+        auxVertCopia = auxVertCopia->proximo;
+        strcpy (auxVertCopia->nomeVert, auxVert->nomeVert );
+        auxVert = auxVert->proximo;
+      }
+
+    }
+    auxGrafo = auxGrafo->proxVertice;
+    if (auxGrafo){
+      auxCopia->proxVertice = aloca_grafo();
+      auxCopia = auxCopia->proxVertice;
+      strcpy (auxCopia->nomeVert, auxGrafo->nomeVert );
+    }
+  }
+  return copia;
+}
+grafo escreve_grafo(FILE *output, grafo g){
+  grafo auxGrafo = g;
+  vertice auxVert;
+  inicializa_visitados(g);
+  while (auxGrafo){
+    auxVert = auxGrafo->verticeAdj;
+    while (auxVert) {
+      if (!auxVert->visitado){
+        fprintf(output, "%s %s\n", auxGrafo->nomeVert, auxVert->nomeVert);
+        auxVert->visitado = 1;
+        insere_visitado(g,auxVert->nomeVert,auxGrafo->nomeVert);
+
+      }
+
+      auxVert = auxVert->proximo;
+    }
+
+    auxGrafo = auxGrafo->proxVertice;
+  }
+  return g;
+}
+
+void insere_visitado (grafo g, char* procurado, char* visitado){
+  grafo auxGrafo = g;
+  vertice auxVert;
+  while (auxGrafo && strcmp(auxGrafo->nomeVert, procurado) != 0){
+    auxGrafo = auxGrafo->proxVertice;
+  }
+
+  auxVert = auxGrafo->verticeAdj;
+
+  while (auxVert && strcmp(auxVert->nomeVert,visitado) != 0){
+    auxVert = auxVert->proximo;
+  }
+  auxVert->visitado = 1;
+
+}
+void printa_grafo (grafo g){
+  grafo aux = g;
+  vertice auxV = NULL;
+  while (aux){
+    printf("%s -> ", aux->nomeVert );
+    auxV = aux->verticeAdj;
+
+    while (auxV){
+      printf("%s ",auxV->nomeVert);
+      auxV = auxV->proximo;
+    }
+    printf("\n");
+    aux = aux->proxVertice;
+  }
+  printf("\n");
+}
 char *nome(vertice v){
   return v->nomeVert;
 }
@@ -82,16 +174,6 @@ unsigned int n_vertices_impar(grafo g){
     auxGrafo = auxGrafo->proxVertice;
   }
   return n;
-}
-
-void printa_trilha (vertice trilha){
-  vertice aux = trilha;
-  printf("%s\n", "TRILHA");
-  while (aux) {
-    printf("%s -> ", aux->nomeVert);
-    aux = aux->proximo;
-  }
-  printf("\n");
 }
 
 int existe_vert_da_trilha_em_G_com_grau_positivo(grafo g,vertice trilhaEuleriana, char* vert){
@@ -295,7 +377,6 @@ void insere_segmentos_do_grafo_no_vetor (grafo g,vertice *cobertura[]){
   grafo auxGrafo = g;
   vertice auxVert = NULL;
   unsigned int i = 0 , j = 0;
-  printf("%s\n", "teste" );
 
   while (auxGrafo){
     if (auxGrafo->verticeAdj){
@@ -315,6 +396,7 @@ void insere_segmentos_do_grafo_no_vetor (grafo g,vertice *cobertura[]){
       while (auxVert ){
         cobertura[i][j] = aloca_vertice();
         strcpy (cobertura[i][j]->nomeVert, auxVert->nomeVert);
+        printf("inserido %s\n", cobertura[i][j]->nomeVert);
         ++j;
         auxVert = auxVert->proximo;
       }
@@ -395,17 +477,19 @@ unsigned int cobertura_por_trilhas(grafo g, vertice **cobertura[]){
   k = n_vertices_impar(g);
   *cobertura = (vertice**) malloc ((k/2) * sizeof(vertice*));
 
+  grafo copia = copia_grafo(g);
   if(k != 0){
     // grafo possui mais de uma trilha de cobertura
-    insere_v_aos_impares(g);
-    encontra_trilha_euleriana(g, trilhaEuleriana);
-    segmenta_trilha_euleriana(g,trilhaEuleriana, *cobertura);
-
+    insere_v_aos_impares(copia);
+    encontra_trilha_euleriana(copia, trilhaEuleriana);
+    segmenta_trilha_euleriana(copia,trilhaEuleriana, *cobertura);
+    destroi_grafo(copia);
     return k/2;
   } else {
     //grafo é euleriano, logo possui somente uma trilha de cobertura
-    encontra_trilha_euleriana(g, trilhaEuleriana);
-    segmenta_trilha_euleriana(g, trilhaEuleriana, *cobertura);
+    encontra_trilha_euleriana(copia, trilhaEuleriana);
+    segmenta_trilha_euleriana(copia, trilhaEuleriana, *cobertura);
+    destroi_grafo(copia);
 
     return 1;
   }
@@ -448,7 +532,6 @@ int busca_nomeVert_no_grafo (grafo g, char * vert){
   return 0;
 }
 
-
 void processa_linha (char *linha,char *vert1,char *vert2){
   int k = 0, j = 0;
   strcpy (vert1, "\0");
@@ -465,7 +548,6 @@ void processa_linha (char *linha,char *vert1,char *vert2){
   }
   vert2[j] = '\0';
 }
-
 
 grafo le_grafo(FILE *input){
   grafo cabeca = NULL;
@@ -554,23 +636,4 @@ int destroi_grafo(grafo g){
     return 0;
   }
   return 1;
-}
-
-
-
-void printa_grafo (grafo g){
-  grafo aux = g;
-  vertice auxV = NULL;
-  while (aux){
-    printf("%s -> ", aux->nomeVert );
-    auxV = aux->verticeAdj;
-
-    while (auxV){
-      printf("%s ",auxV->nomeVert);
-      auxV = auxV->proximo;
-    }
-    printf("\n");
-    aux = aux->proxVertice;
-  }
-  printf("\n");
 }

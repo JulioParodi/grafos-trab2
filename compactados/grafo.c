@@ -5,17 +5,18 @@
 #include "grafo.h"
 
 
-typedef struct _grafo {
-  char nomeVert[1024];           // Armazena nome do vertice existente no grafo
-  struct _vertice *verticeAdj;    // Ponteiro para os vertices adjacentes ao nomeVert
-  struct _grafo *proxVertice;     // Ponteiro para os proximos vertices existentes no grafo
-}GrafoS;
 
-typedef struct _vertice {
-  char nomeVert[1024];           // Nome do vertice adjacente a algum outro vertice ja existente no grafo
-  struct _vertice *proximo;       // Ponteiro para o proximo vizinho do mesmo vertice
-  int visitado;
-}VerticeS;
+// typedef struct _grafo {
+//   char nomeVert[1024];           // Armazena nome do vertice existente no grafo
+//   struct _vertice *verticeAdj;    // Ponteiro para os vertices adjacentes ao nomeVert
+//   struct _grafo *proxVertice;     // Ponteiro para os proximos vertices existentes no grafo
+// }GrafoS;
+//
+// typedef struct _vertice {
+//   char nomeVert[1024];           // Nome do vertice adjacente a algum outro vertice ja existente no grafo
+//   struct _vertice *proximo;       // Ponteiro para o proximo vizinho do mesmo vertice
+//   int visitado;
+// }VerticeS;
 
 
 char *nome(vertice v){
@@ -81,6 +82,16 @@ unsigned int n_vertices_impar(grafo g){
     auxGrafo = auxGrafo->proxVertice;
   }
   return n;
+}
+
+void printa_trilha (vertice trilha){
+  vertice aux = trilha;
+  printf("%s\n", "TRILHA");
+  while (aux) {
+    printf("%s -> ", aux->nomeVert);
+    aux = aux->proximo;
+  }
+  printf("\n");
 }
 
 int existe_vert_da_trilha_em_G_com_grau_positivo(grafo g,vertice trilhaEuleriana, char* vert){
@@ -284,6 +295,7 @@ void insere_segmentos_do_grafo_no_vetor (grafo g,vertice *cobertura[]){
   grafo auxGrafo = g;
   vertice auxVert = NULL;
   unsigned int i = 0 , j = 0;
+  printf("%s\n", "teste" );
 
   while (auxGrafo){
     if (auxGrafo->verticeAdj){
@@ -436,6 +448,7 @@ int busca_nomeVert_no_grafo (grafo g, char * vert){
   return 0;
 }
 
+
 void processa_linha (char *linha,char *vert1,char *vert2){
   int k = 0, j = 0;
   strcpy (vert1, "\0");
@@ -452,6 +465,7 @@ void processa_linha (char *linha,char *vert1,char *vert2){
   }
   vert2[j] = '\0';
 }
+
 
 grafo le_grafo(FILE *input){
   grafo cabeca = NULL;
@@ -540,4 +554,23 @@ int destroi_grafo(grafo g){
     return 0;
   }
   return 1;
+}
+
+
+
+void printa_grafo (grafo g){
+  grafo aux = g;
+  vertice auxV = NULL;
+  while (aux){
+    printf("%s -> ", aux->nomeVert );
+    auxV = aux->verticeAdj;
+
+    while (auxV){
+      printf("%s ",auxV->nomeVert);
+      auxV = auxV->proximo;
+    }
+    printf("\n");
+    aux = aux->proxVertice;
+  }
+  printf("\n");
 }
