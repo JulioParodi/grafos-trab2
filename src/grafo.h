@@ -46,7 +46,7 @@ void cria_vizinho (grafo cabeca, char *vert1Linha, char *vert2Linha);
 int busca_nomeVert_no_grafo (grafo g, char * vert);
 
 
-unsigned int cobertura_por_trilhas(grafo g, vertice *cobertura[]);
+unsigned int cobertura_por_trilhas(grafo g, vertice **cobertura[]);
 
 
 
