@@ -84,7 +84,7 @@ void printa_trilha (vertice trilha){
   printf("\n");
 }
 
-int existe_vert_da_trilha_em_G_com_grau_positivo(grafo g,vertice trilhaEuleriana, char *vert){
+int existe_vert_da_trilha_em_G_com_grau_positivo(grafo g,vertice trilhaEuleriana, char* vert){
   vertice auxTrilha = trilhaEuleriana;
   grafo auxGrafo = g;
   strcpy(vert, "\0");
@@ -124,7 +124,6 @@ void encontra_circuito_no_grafo(grafo g,char *vert ,vertice circuito){
   int achouCircuito = 1;
   unsigned int cont = 0;
   auxCircuito = circuito;
-
   inicializa_visitados (g);
 
   while ( strcmp(auxGrafo->nomeVert, vert) != 0){
@@ -143,7 +142,7 @@ void encontra_circuito_no_grafo(grafo g,char *vert ,vertice circuito){
       if (strcmp(auxVert->nomeVert, pai->nomeVert) == 0){
         auxVert->visitado = 1;
       }
-      if( strcmp(auxVert->nomeVert, vert) == 0){
+      if( strcmp(auxVert->nomeVert, vert) == 0 && !auxVert->visitado){
         if (!(strcmp(pai->nomeVert, vert) == 0)){
           achouCircuito = 0;
           strcpy (auxCircuito->nomeVert, auxVert->nomeVert);
@@ -154,7 +153,7 @@ void encontra_circuito_no_grafo(grafo g,char *vert ,vertice circuito){
     }
 
     auxVert = auxGrafo->verticeAdj;
-    while (auxVert->visitado){
+    while (auxVert->visitado && auxVert){
       auxVert = auxVert->proximo;
     }
 

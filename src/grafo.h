@@ -39,20 +39,27 @@ typedef struct _vertice * vertice;
 
 
 
+
+grafo le_grafo(FILE *input);
+void processa_linha (char *linha,char *vert1,char *vert2);
+void cria_vizinho (grafo cabeca, char *vert1Linha, char *vert2Linha);
+int busca_nomeVert_no_grafo (grafo g, char * vert);
+
+
+unsigned int cobertura_por_trilhas(grafo g, vertice *cobertura[]);
+
+
+
 grafo aloca_grafo (void);
 vertice aloca_vertice (void);
-void processa_linha (char *linha,char *vert1,char *vert2);
-int busca_nomeVert_no_grafo (grafo g, char * vert);
-void printa_grafo (grafo g);
-int verifica_vizinho (grafo vert1, char * nomeVert);
-void cria_vizinho (grafo cabeca, char *vert1Linha, char *vert2Linha);
+
+
 unsigned int n_vertices_impar(grafo g);
 void insere_v_aos_impares(grafo g);
 void encontra_trilha_euleriana(grafo g, vertice trilhaEuleriana);
-int existe_vert_da_trilha_em_G_com_grau_positivo(grafo g,vertice trilhaEuleriana, char *vert);
+// int existe_vert_da_trilha_em_G_com_grau_positivo(grafo g,vertice trilhaEuleriana, char *vert);
 void encontra_circuito_no_grafo(grafo g,char*,vertice circuito);
 void segmenta_trilha_euleriana(grafo g,vertice trilhaEuleriana,vertice *cobertura[]);
-void printa_trilha (vertice trilha);
 void inicializa_visitados (grafo g);
 void insere_circuito_na_trilha(vertice trilhaEuleriana, vertice circuito);
 void insere_segmentos_da_trilha_no_grafo_vazio(grafo g, vertice trilhaEuleriana);
@@ -61,6 +68,9 @@ void remove_aresta (grafo g, char* vertProcurado, char* vertRemovido);
 void remove_arestas_circuito_do_grafo(grafo g, vertice circuito);
 void insere_segmentos_do_grafo_no_vetor (grafo g,vertice *cobertura[]);
 
+
+void printa_grafo (grafo g);
+void printa_trilha (vertice trilha);
 
 // remove_arestas_circuito_do_grafo(g,circuito);
 
@@ -87,7 +97,6 @@ int destroi_grafo(grafo g);
 // devolve o grafo lido. Caso o arquivo esteja mal formado o
 // comportamento da função é indefinido
 
-grafo le_grafo(FILE *input);
 
 //------------------------------------------------------------------------------
 // escreve o grafo g em output, no mesmo formato que o usado por le_grafo()
@@ -130,7 +139,6 @@ unsigned int n_arestas(grafo g);
 //     2. cobertura[i][l] == NULL, e
 //     3. cobertura[i][j-1] é vizinho de cobertura[i][j] em g, para cada 0 < j < l
 
-unsigned int cobertura_por_trilhas(grafo g, vertice *cobertura[]);
 
 //------------------------------------------------------------------------------
 #endif
